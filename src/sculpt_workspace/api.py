@@ -16,7 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 
 from .errors import InvalidRequest, PayloadTooLarge, SculptError
-from .models import BriefRequest, CheckoutRequest, ExportRequest, InspectRequest, RenderRequest
+from .models import BriefRequest, CheckoutRequest, EditRequest, ExportRequest, InspectRequest, RenderRequest
 from .security import SESSION_COOKIE, SessionStore, cookie_value, session_cookie_header
 from .services import MAX_REFERENCE_BYTES, Workspace
 
@@ -158,6 +158,16 @@ def install(app: FastAPI, sessions: SessionStore) -> None:
     async def inspect(request: Request, project_id: str) -> dict[str, Any]:
         body = await _json_body(request)
         return await _ws(request).inspect(_model(InspectRequest, {**body, "project_id": project_id}))
+
+    @router.post("/projects/{project_id}/edits", status_code=202)
+    async def submit_edit(request: Request, project_id: str) -> dict[str, Any]:
+        """Edits from the browser's code editor; validated exactly like agent edits."""
+        body = await _json_body(request)
+        return await _ws(request).submit_edit(_model(EditRequest, {**body, "project_id": project_id}), author="user")
+
+    @router.get("/projects/{project_id}/revisions/{revision_id}/source")
+    async def revision_source(request: Request, project_id: str, revision_id: str) -> dict[str, Any]:
+        return await _ws(request).revision_source(project_id, revision_id)
 
     @router.post("/projects/{project_id}/checkout")
     async def checkout(request: Request, project_id: str) -> dict[str, Any]:

@@ -167,6 +167,7 @@ class Executor:
                         "blender_version": self.runner.version,
                         "protection_report": protection,
                         "job_id": job_id,
+                        "author": "upload",
                     },
                 )
                 if not await self.repo.move_current_revision(conn, pid, None, revision_id):
@@ -274,6 +275,7 @@ class Executor:
                         "blender_version": self.runner.version,
                         "protection_report": report,
                         "job_id": job_id,
+                        "author": params.get("author", "agent"),
                     },
                 )
                 if not await self.repo.move_current_revision(conn, pid, base, revision_id):

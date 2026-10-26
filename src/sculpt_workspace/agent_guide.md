@@ -16,6 +16,9 @@ original upload is protected and read-only; everything you add is yours to chang
    in a script), what material, and from which views it must be visible.
 5. If earlier revisions hold agent objects you need to change, read the script that made them:
    `get_result(edit_job_id, include_source=true, include_images=false)`.
+6. Revisions have an `author`: `agent`, `user` (written by the person in the browser's code
+   editor) or `upload`. Treat the user's revisions as intended: build on them and do not remove or
+   undo their objects unless the brief asks you to.
 
 ## 2. Look before you build
 

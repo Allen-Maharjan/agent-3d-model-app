@@ -31,6 +31,7 @@ class SyntheticRunner:
         self, script: str, request: dict[str, Any], *, workdir: Path, deadline: float, log_path: Path
     ) -> dict[str, Any]:
         if script == "import_project.py":
+            self.reject = False  # a rejected edit must not leak into a later import's validation
             Path(request["output_dir"], "model.blend").write_bytes(b"BLENDER-synthetic-revision")
             return {"fingerprints": BASELINE}
         if script == "apply_edit.py":

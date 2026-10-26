@@ -1241,3 +1241,294 @@ ul.checks li[data-severity="error"] {
 ul.checks li[data-severity="info"] {
   color: var(--ink-3);
 }
+
+/* -- code panel --------------------------------------------------------- */
+
+.ws-main {
+  display: grid;
+  gap: var(--s-6);
+  min-width: 0;
+}
+.code-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-2);
+}
+.code-head .section-title {
+  margin: 0 var(--s-2) 0 0;
+}
+.code-head .select {
+  min-height: 32px;
+}
+.code-head .btn-ghost {
+  margin-left: auto;
+}
+.code-stats {
+  font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+.stat-add {
+  color: var(--blue);
+  font-weight: 600;
+}
+.code-stats[data-kind="edited"] .stat-add {
+  color: var(--mark-ink);
+}
+.stat-del {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+.code-caption,
+.code-hint {
+  font-size: var(--t-sm);
+  color: var(--ink-3);
+  margin-bottom: var(--s-3);
+}
+.code-hint {
+  margin: var(--s-2) 0 var(--s-3);
+  font-size: var(--t-xs);
+}
+.author-chip {
+  display: inline-block;
+  padding: 0 6px;
+  border: 1px solid var(--rule-strong);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 18px;
+  color: var(--ink-2);
+}
+.author-chip:empty {
+  display: none;
+}
+.author-chip[data-author="agent"] {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.author-chip[data-author="user"] {
+  border-color: var(--mark);
+  color: var(--mark-ink);
+}
+.code-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-3);
+  background: var(--blue-soft);
+  font-size: var(--t-sm);
+}
+.code-banner[hidden] {
+  display: none;
+}
+.code-banner span {
+  flex: 1;
+  min-width: 200px;
+}
+.code-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  margin-top: var(--s-3);
+}
+.code-controls .input {
+  flex: 1;
+  min-width: 220px;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: var(--t-sm);
+  white-space: nowrap;
+}
+.check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--mark);
+}
+.code-ok {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1);
+  font-size: var(--t-sm);
+}
+.code-ok .icon {
+  color: var(--blue);
+}
+.code-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--s-3);
+  margin-top: var(--s-3);
+}
+.code-reference pre {
+  max-height: 320px;
+}
+.code-fallback {
+  min-height: min(26rem, 60vh);
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  tab-size: 4;
+}
+
+/* Editor theme from the design tokens, so it follows light and dark mode. */
+.code-editor .CodeMirror {
+  height: min(26rem, 60vh);
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--t-sm);
+  line-height: 1.55;
+}
+.code-editor .CodeMirror-focused {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+.code-editor .CodeMirror-gutters {
+  background: var(--surface-sunk);
+  border-right: 1px solid var(--rule);
+}
+.code-editor .CodeMirror-linenumber {
+  color: var(--ink-3);
+}
+.code-editor .CodeMirror-cursor {
+  border-left: 2px solid var(--ink);
+}
+.code-editor .CodeMirror-selected,
+.code-editor .CodeMirror-focused .CodeMirror-selected {
+  background: color-mix(in srgb, var(--blue) 28%, transparent);
+}
+.code-editor .cm-keyword { color: var(--mark-ink); font-weight: 600; }
+.code-editor .cm-def { color: var(--ink); font-weight: 600; }
+.code-editor .cm-builtin,
+.code-editor .cm-variable-2 { color: var(--blue); }
+.code-editor .cm-string { color: color-mix(in srgb, var(--blue) 70%, var(--ink)); }
+.code-editor .cm-number { color: var(--mark); }
+.code-editor .cm-comment { color: var(--ink-3); font-style: italic; }
+.code-editor .cm-operator,
+.code-editor .cm-punctuation { color: var(--ink-2); }
+
+/* Change markers: blue = added by this revision vs its parent, oxide = your unpublished edits. */
+.code-editor .cm-change-gutter {
+  width: 5px;
+}
+.cm-change-mark {
+  width: 3px;
+  height: 1.55em;
+  margin-left: 1px;
+}
+.cm-change-added {
+  background: var(--blue);
+}
+.cm-change-edited {
+  background: var(--mark);
+}
+.code-editor .cm-line-added {
+  background: color-mix(in srgb, var(--blue) 9%, transparent);
+}
+.code-editor .cm-line-edited {
+  background: color-mix(in srgb, var(--mark) 9%, transparent);
+}
+.code-editor .cm-line-error {
+  background: var(--fault-soft);
+}
+.code-editor .cm-gutter-error .CodeMirror-linenumber {
+  color: var(--fault);
+  font-weight: 700;
+}
+
+/* The carve: when code changes, a scan line runs down the editor and each
+   changed line is swept in from the left, staggered, like a cut being made
+   along the stencil. Played only when a script loads, never while typing. */
+.code-editor .CodeMirror.is-scanning::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  z-index: 6;
+  pointer-events: none;
+  background: var(--blue);
+  box-shadow: 0 0 14px 2px color-mix(in srgb, var(--blue) 60%, transparent);
+  animation: code-scan 900ms var(--ease) both;
+}
+.code-editor .cm-carve {
+  position: relative;
+}
+.code-editor .cm-carve::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* The highlight is the middle third of a 300%-wide gradient; moving the
+     background keeps the sweep inside the line, clear of the gutter. */
+  background: linear-gradient(
+    90deg,
+    transparent 30%,
+    color-mix(in srgb, var(--blue) 40%, transparent) 46%,
+    color-mix(in srgb, var(--blue) 14%, transparent) 58%,
+    transparent 70%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  animation: code-sweep 820ms var(--ease) both;
+  animation-delay: var(--carve-delay, 0ms);
+}
+.code-editor .cm-carve .CodeMirror-line {
+  animation: code-ink 620ms var(--ease) both;
+  animation-delay: var(--carve-delay, 0ms);
+}
+.cm-change-mark.is-carving {
+  transform-origin: top;
+  animation: code-mark 420ms var(--ease) both;
+}
+@keyframes code-scan {
+  from { top: 0; opacity: 1; }
+  85% { opacity: 1; }
+  to { top: 100%; opacity: 0; }
+}
+@keyframes code-sweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+@keyframes code-ink {
+  from { opacity: 0.15; transform: translateX(-8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes code-mark {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.code-editor .cm-carve-d0 { --carve-delay: 0ms; }
+.code-editor .cm-carve-d1 { --carve-delay: 35ms; }
+.code-editor .cm-carve-d2 { --carve-delay: 70ms; }
+.code-editor .cm-carve-d3 { --carve-delay: 105ms; }
+.code-editor .cm-carve-d4 { --carve-delay: 140ms; }
+.code-editor .cm-carve-d5 { --carve-delay: 175ms; }
+.code-editor .cm-carve-d6 { --carve-delay: 210ms; }
+.code-editor .cm-carve-d7 { --carve-delay: 245ms; }
+.code-editor .cm-carve-d8 { --carve-delay: 280ms; }
+.code-editor .cm-carve-d9 { --carve-delay: 315ms; }
+.code-editor .cm-carve-d10 { --carve-delay: 350ms; }
+.code-editor .cm-carve-d11 { --carve-delay: 385ms; }
+.code-editor .cm-carve-d12 { --carve-delay: 420ms; }
+.code-editor .cm-carve-d13 { --carve-delay: 455ms; }
+.code-editor .cm-carve-d14 { --carve-delay: 490ms; }
+.code-editor .cm-carve-d15 { --carve-delay: 525ms; }
+.code-editor .cm-carve-d16 { --carve-delay: 560ms; }
+.code-editor .cm-carve-d17 { --carve-delay: 595ms; }
+.code-editor .cm-carve-d18 { --carve-delay: 630ms; }
+.code-editor .cm-carve-d19 { --carve-delay: 665ms; }
+.code-editor .cm-carve-d20 { --carve-delay: 700ms; }
+.code-editor .cm-carve-d21 { --carve-delay: 735ms; }
+.code-editor .cm-carve-d22 { --carve-delay: 770ms; }
+.code-editor .cm-carve-d23 { --carve-delay: 805ms; }

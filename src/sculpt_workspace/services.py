@@ -225,6 +225,7 @@ class Workspace:
                     "parent_id": r["parent_id"],
                     "current": r["id"] == current,
                     "summary": r["summary"],
+                    "author": r.get("author") or ("upload" if r["number"] == 1 else "agent"),
                     "created_at": r["created_at"],
                     "edit_job_id": r["job_id"] if r["number"] > 1 else None,
                     "agent_objects": len(report.get("agent_objects") or []),
@@ -317,6 +318,8 @@ class Workspace:
             "summary": r["summary"],
             "created_at": r["created_at"],
             "blender_version": r["blender_version"],
+            "author": r.get("author") or ("upload" if r["number"] == 1 else "agent"),
+            "has_source": r["number"] > 1 and r["job_id"] is not None,
             "protection": {
                 "ok": report.get("ok"),
                 "baseline": report.get("baseline", False),
@@ -369,12 +372,13 @@ class Workspace:
 
     # -- mutations ----------------------------------------------------------
 
-    async def submit_edit(self, req: EditRequest) -> dict[str, Any]:
+    async def submit_edit(self, req: EditRequest, author: str = "agent") -> dict[str, Any]:
+        """Queue an edit. `author` is 'agent' for MCP and 'user' for the browser editor."""
         self._require_blender()
         if req.from_dry_run is not None:
             req = await self._from_dry_run(req)
         if req.dry_run:
-            return await self._submit_dry_run(req)
+            return await self._submit_dry_run(req, author)
         async with self._locks[req.project_id]:
             project = await self._project(req.project_id)
             await self._revision(req.project_id, req.base_revision_id)
@@ -414,6 +418,7 @@ class Workspace:
                                 "summary": req.summary,
                                 "render_job_id": render_job,
                                 "strict_checks": req.strict_checks,
+                                "author": author,
                             },
                         },
                     )
@@ -465,7 +470,7 @@ class Workspace:
             }
         )
 
-    async def _submit_dry_run(self, req: EditRequest) -> dict[str, Any]:
+    async def _submit_dry_run(self, req: EditRequest, author: str) -> dict[str, Any]:
         """Queue an edit that is validated and rendered but never published.
 
         It may target any revision and does not block, or wait for, real edits.
@@ -492,6 +497,7 @@ class Workspace:
                             "summary": req.summary,
                             "dry_run": True,
                             "strict_checks": req.strict_checks,
+                            "author": author,
                             "render": self._standard_render_params(frame, edit=True),
                         },
                     },
@@ -931,6 +937,20 @@ class Workspace:
                 data, size = preview(path, max_size)
                 out.append((data, {"reference_id": ref["reference_id"], "note": ref["note"], "size": size}))
         return out
+
+    async def revision_source(self, project_id: str, revision_id: str) -> dict[str, Any]:
+        """The edit script that produced a revision (none for the uploaded original)."""
+        rev = await self._revision(project_id, revision_id)
+        job = await self.repo.get_job(rev["job_id"]) if rev["job_id"] else None
+        source = ((job or {}).get("params") or {}).get("source") if job and job["kind"] == "edit" else None
+        return {
+            "revision_id": revision_id,
+            "number": rev["number"],
+            "parent_id": rev["parent_id"],
+            "author": rev.get("author") or ("upload" if rev["number"] == 1 else "agent"),
+            "summary": rev["summary"],
+            "source": source,
+        }
 
     def _rel(self, artifact: dict[str, Any]) -> str:
         return Path(artifact["path"]).relative_to(self.storage.root).as_posix()

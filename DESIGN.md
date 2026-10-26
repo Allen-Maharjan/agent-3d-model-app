@@ -300,7 +300,8 @@ Tabler outline icons at stroke 1.75, from a local SVG sprite, at 18px (28px larg
 - **Do** present render views as a fixed-scale 2x2 grid of registered plates with crosshairs and a view/camera caption.
 - **Do** surface failures verbatim in a Fault Wash callout that names the problem and the recovery.
 - **Do** use tabular numerals and monospace, select-all identifiers.
-- **Do** honour `prefers-reduced-motion`; motion is limited to 80-200ms state transitions, the running-line pulse and the loading sheen.
+- **Do** honour `prefers-reduced-motion`; motion is limited to 80-200ms state transitions, the running-line pulse, the loading sheen, and the code carve.
+- **Do** keep the code carve to moments when a script loads (a new revision, switching revisions): a quarry-blue scan line down the editor and a staggered sweep across each changed line, about 1.6s in total. Never play it while the user types; unpublished edits only get static oxide markers.
 
 ### Don't:
 - **Don't** round corners or use pill shapes.

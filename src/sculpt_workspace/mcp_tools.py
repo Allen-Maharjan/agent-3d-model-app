@@ -52,6 +52,8 @@ Workflow
 4. render_views for other angles, focus_object_ids close-ups or normal/depth passes;
    checkout_revision to step back; export_model for .blend or STL.
 
+Revisions carry an author (agent, user, upload). The user can edit in the browser too: build on their
+revisions and do not undo their objects unless asked.
 Never guess coordinates from a picture: use image_ray, or sculpt.ray / sculpt.nearest in the script.
 Work in small edits and review each one. Rejections include hints on how to fix them.
 

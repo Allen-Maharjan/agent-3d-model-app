@@ -155,8 +155,8 @@ class Repository:
         await conn.execute(
             """
             INSERT INTO revisions (id, project_id, number, parent_id, summary, created_at,
-                                   blender_version, protection_report, job_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                   blender_version, protection_report, job_id, author)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 rev["id"],
@@ -168,6 +168,7 @@ class Repository:
                 rev["blender_version"],
                 _json(rev["protection_report"]),
                 rev["job_id"],
+                rev.get("author", "agent"),
             ),
         )
 

@@ -149,14 +149,14 @@ const RECOVERY = {
   blender_crashed: "Blender stopped unexpectedly. Check the job log in the data directory and retry.",
   interrupted: "The server restarted while this job ran. Submit it again.",
   queue_full: "Wait for running jobs to finish, then try again.",
-  protected_geometry_modified: "Ask the agent to change only objects it added. The protected objects it touched are listed below.",
+  protected_geometry_modified: "Edits may change only objects they added. The protected objects this one touched are listed below, with fixes.",
   baseline_not_reproducible: "Blender evaluated the file differently on reload. Apply or remove non-deterministic modifiers and upload again.",
   stale_revision: "Someone moved the current revision. The page has been refreshed; try again.",
   mutation_pending: "Wait for the running edit to finish first.",
   no_visible_geometry: "Make at least one mesh visible for rendering, or check out a revision that has one.",
   nothing_to_export: "Make at least one mesh visible, then export again.",
-  geometry_check_failed: "Ask the agent to fix the listed problems on its own objects and try again.",
-  edit_script_error: "The agent's script failed before anything was saved. The error and line are below.",
+  geometry_check_failed: "Fix the listed problems on the edit's own objects and try again.",
+  edit_script_error: "The script failed before anything was saved. The error and line are below.",
   invalid_image: "Upload a PNG, JPEG, WebP, GIF or BMP image.",
   too_many_references: "Remove a reference image before adding another.",
 };
@@ -430,7 +430,63 @@ const JOB_LABEL = { import: "Import", edit: "Agent edit", render: "Render", insp
 const REJECTED = new Set(["protected_geometry_modified", "geometry_check_failed"]);
 
 function jobLabel(j) {
-  return j.kind === "edit" && j.params?.dry_run ? "Dry run" : JOB_LABEL[j.kind] || j.kind;
+  if (j.kind !== "edit") return JOB_LABEL[j.kind] || j.kind;
+  const mine = j.params?.author === "user";
+  if (j.params?.dry_run) return mine ? "Your dry run" : "Dry run";
+  return mine ? "Your edit" : JOB_LABEL.edit;
+}
+
+const AUTHOR_LABEL = { agent: "Agent", user: "You", upload: "Original upload" };
+
+const STARTER_SCRIPT = `# Edit script: runs inside Blender against the current revision.
+# The original sculpture is protected and read-only; build new objects and attach them to it.
+# Ctrl/Cmd+Enter starts a dry run. The helper reference is below the editor.
+
+lo, hi = sculpt.scene_bounds()
+size = hi - lo
+print("sculpture size (mm):", sculpt.to_mm(size))
+`;
+
+const SCRIPT_REFERENCE = `Predefined: bpy, bmesh, mathutils, Vector, Matrix, math, sculpt. print() output is returned.
+
+sculpt.objects() -> {object_id: Object}    sculpt.get(id)    sculpt.id_of(obj)
+sculpt.protected_ids    sculpt.is_protected(obj_or_id)    sculpt.link(obj, collection=None)
+sculpt.scene_bounds() -> (min, max) of the original sculpture
+sculpt.mm(x), sculpt.cm(x) -> Blender units    sculpt.to_mm(units_or_vector)
+sculpt.ray(origin, direction, object_ids=None, max_distance=None) -> hit or None
+sculpt.nearest(point, object_ids=None, max_distance=None) -> hit or None
+    hit: position, normal, distance, object_id, object_name, face_index
+sculpt.place_on_surface(obj, position, normal, offset=0.0, axis="Z", up="Y", spin=0.0)
+sculpt.duplicate(obj, linked=False, name=None)    sculpt.array_along(obj, positions, normals=None)
+sculpt.from_curve(points, radius=0.01, name="Curve", cyclic=False, smooth=True)
+sculpt.conform_to(obj, target_id, offset=0.0, method="NEAREST_SURFACEPOINT")
+sculpt.boolean(obj, cutter, operation="UNION")
+sculpt.material(name, color, metallic=0.0, roughness=0.5, emission=None)
+sculpt.assign_material(obj, material)    sculpt.apply_modifiers(obj) -> object to use
+
+Helpers refuse to change protected objects. Avoid bpy.ops: background Blender has no UI context.`;
+
+const REDUCE_MOTION = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
+/* "+12 -3 lines" that counts up from zero, so a code change registers at a glance. */
+function countUp(el, added, removed, tail, animate = true) {
+  cancelAnimationFrame(el._raf);
+  const paint = (k) => {
+    el.replaceChildren(
+      h("span", { class: "stat-add" }, `+${Math.round(added * k)}`),
+      " ",
+      h("span", { class: "stat-del" }, `−${Math.round(removed * k)}`),
+      ` ${tail}`,
+    );
+  };
+  if (!animate || REDUCE_MOTION || (!added && !removed)) return paint(1);
+  const start = performance.now();
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / 600);
+    paint(1 - (1 - t) ** 3);
+    if (t < 1) el._raf = requestAnimationFrame(step);
+  };
+  el._raf = requestAnimationFrame(step);
 }
 
 function changeLine(changes) {
@@ -466,11 +522,12 @@ function workspaceScreen(projectId) {
   const brief = h("section", { class: "rail-section", "aria-labelledby": "brief-title" });
   const jobs = h("section", { class: "rail-section", "aria-labelledby": "jobs-title" });
   const revs = h("section", { class: "rail-section", "aria-labelledby": "revs-title" });
+  const codeSlot = h("div", { class: "code-slot" });
   const live = h("div", { class: "visually-hidden", role: "status", "aria-live": "polite", "aria-atomic": "true" });
   root.append(
     h("a", { class: "back", href: "/", "data-nav": true }, icon("arrow-left"), "Projects"),
     head,
-    h("div", { class: "ws-body" }, renders, h("aside", { class: "rail", "aria-label": "Brief, jobs and revisions" }, brief, jobs, revs)),
+    h("div", { class: "ws-body" }, h("div", { class: "ws-main" }, renders, codeSlot), h("aside", { class: "rail", "aria-label": "Brief, jobs and revisions" }, brief, jobs, revs)),
     live,
   );
   main.replaceChildren(root);
@@ -776,13 +833,16 @@ function workspaceScreen(projectId) {
         }));
         actions.append(btn);
       }
+      if (r.has_source) {
+        actions.append(h("button", { class: "btn btn-ghost", type: "button", onclick: () => code.showRevision(r.revision_id) }, icon("cube"), "View code"));
+      }
       actions.append(h("a", { class: "btn btn-ghost", href: `/api/projects/${projectId}/revisions/${r.revision_id}/model.blend`, "aria-label": `Download R${r.number} .blend` }, icon("download"), ".blend"));
       const parent = r.parent_id ? byId[r.parent_id] : null;
       return h("li", { class: `rev${isCur ? " is-current" : ""}` },
         block(r.number, { size: "sm", current: isCur, original: r.number === 1 }),
         h("div", { class: "rev-body" },
           h("div", { class: "rev-summary" }, r.summary),
-          h("div", { class: "rev-meta" }, timeEl(r.created_at), parent ? h("span", {}, `from R${parent.number}`) : "", h("span", { class: "mono" }, r.revision_id)),
+          h("div", { class: "rev-meta" }, h("span", { class: "author-chip", "data-author": r.author }, AUTHOR_LABEL[r.author] || r.author), timeEl(r.created_at), parent ? h("span", {}, `from R${parent.number}`) : "", h("span", { class: "mono" }, r.revision_id)),
           guard, r.protection.changes ? h("div", { class: "rev-meta" }, changeLine(r.protection.changes)) : "", actions));
     });
     return [
@@ -790,6 +850,340 @@ function workspaceScreen(projectId) {
       items.length ? h("ol", { class: "revs", reversed: true }, items) : h("div", { class: "empty" }, h("p", {}, "Revision 1 appears once the import finishes.")),
     ];
   }
+
+  /* ---------- code panel ----------
+     Built once and updated in place (never through patch()), so re-renders
+     never wipe what the user is typing. Shows the script behind a revision,
+     animates what changed against its parent, and lets the user dry-run and
+     publish their own edits through the same validation as agent edits. */
+  function codePanel() {
+    const draftKey = `sculpt-draft:${projectId}`;
+    const sources = new Map(); // revision id -> script or null; revisions are immutable
+    const st = {
+      ready: false, viewRev: null, base: "", parentText: "", dirty: false, loading: 0,
+      lastCurrent: null, dry: null, awaiting: null, revSig: "",
+    };
+    const section = h("section", { class: "code-panel", "aria-labelledby": "code-title" });
+    const select = h("select", { class: "select", "aria-label": "Show the script of revision" });
+    const author = h("span", { class: "author-chip" });
+    const stats = h("span", { class: "code-stats" });
+    const caption = h("p", { class: "code-caption" });
+    const banner = h("div", { class: "code-banner", role: "status", hidden: true });
+    const host = h("div", { class: "code-editor" });
+    const summary = h("input", { class: "input", type: "text", maxlength: 500, placeholder: "Summary of this edit, shown in Revisions", "aria-label": "Edit summary" });
+    const strictBox = h("input", { type: "checkbox", id: "code-strict" });
+    const dryBtn = h("button", { class: "btn btn-secondary", type: "button" }, icon("refresh"), "Dry run");
+    const pubBtn = h("button", { class: "btn btn-primary", type: "button" }, icon("check"), "Publish");
+    const revertBtn = h("button", { class: "btn btn-ghost", type: "button", disabled: true }, icon("history"), "Revert");
+    const result = h("div", { class: "code-result", "aria-live": "polite" });
+    const live = h("div", { class: "visually-hidden", role: "status", "aria-live": "polite" });
+
+    section.append(
+      h("div", { class: "code-head" },
+        h("h2", { id: "code-title", class: "section-title" }, "Code"),
+        select, author, stats, revertBtn),
+      caption, banner, host,
+      h("div", { class: "code-controls" },
+        summary,
+        h("label", { class: "check", for: "code-strict" }, strictBox, "Strict geometry checks"),
+        dryBtn, pubBtn),
+      h("p", { class: "code-hint" }, "Dry run validates and renders without saving. Publish creates the next revision on top of the current one; the original stays protected either way."),
+      result,
+      h("details", { class: "report code-reference" }, h("summary", {}, "Script reference"), h("pre", {}, SCRIPT_REFERENCE)),
+      live,
+    );
+
+    const editor = createCodeEditor(host, {
+      value: "",
+      label: "Edit script",
+      onChange: () => scheduleDirty(),
+      onRun: () => dryBtn.click(),
+      onEscape: () => summary.focus(),
+    });
+
+    const revById = (id) => data?.revisions.find((r) => r.revision_id === id);
+    const current = () => data?.current_revision;
+
+    async function sourceOf(rev) {
+      if (!rev || !rev.has_source) return null;
+      if (!sources.has(rev.revision_id)) {
+        const res = await api(`/api/projects/${projectId}/revisions/${rev.revision_id}/source`);
+        sources.set(rev.revision_id, res.source ?? null);
+      }
+      return sources.get(rev.revision_id);
+    }
+
+    function saveDraft() {
+      try {
+        if (st.dirty) localStorage.setItem(draftKey, JSON.stringify({ text: editor.getValue(), rev: st.viewRev }));
+        else localStorage.removeItem(draftKey);
+      } catch { /* storage unavailable: drafts are a convenience only */ }
+    }
+
+    function readDraft() {
+      try { return JSON.parse(localStorage.getItem(draftKey) || "null"); } catch { return null; }
+    }
+
+    let dirtyTimer = null;
+    function scheduleDirty() {
+      clearTimeout(dirtyTimer);
+      dirtyTimer = setTimeout(updateDirty, 120);
+    }
+
+    function updateDirty() {
+      const text = editor.getValue();
+      const wasDirty = st.dirty;
+      st.dirty = text !== st.base;
+      editor.clearError();
+      if (st.dirty) {
+        const d = lineDiff(st.base, text);
+        editor.markLines(d.added, "edited", false);
+        countUp(stats, d.added.size, d.removed, "lines, not published", false);
+        stats.dataset.kind = "edited";
+      } else if (wasDirty) {
+        markAgainstParent(false);
+      }
+      revertBtn.disabled = !st.dirty;
+      saveDraft();
+      syncButtons();
+    }
+
+    function markAgainstParent(animate) {
+      const rev = revById(st.viewRev);
+      stats.dataset.kind = "added";
+      if (!rev?.has_source) {
+        editor.markLines(new Set(), "added", false);
+        stats.textContent = rev ? "Starter script" : "";
+        return;
+      }
+      const d = lineDiff(st.parentText, st.base);
+      editor.markLines(d.added, "added", animate);
+      const parent = revById(rev.parent_id);
+      countUp(stats, d.added.size, d.removed, parent ? `lines vs R${parent.number}` : "lines", animate);
+    }
+
+    function describe(rev) {
+      const cur = current();
+      author.textContent = rev ? AUTHOR_LABEL[rev.author] || rev.author : "";
+      author.dataset.author = rev?.author || "";
+      if (!rev) { caption.textContent = ""; return; }
+      const onto = cur ? `Publishing applies it to the current revision, R${cur.number}.` : "";
+      caption.textContent = rev.has_source
+        ? `The script that made R${rev.number} from R${revById(rev.parent_id)?.number ?? "?"}. ${onto}`
+        : `R${rev.number} is the original upload and has no script. Start from this template. ${onto}`;
+    }
+
+    /* Load a revision's script. Animated loads play the carve over the lines it added. */
+    async function show(revId, { animate = true, text = null } = {}) {
+      const ticket = ++st.loading;
+      const rev = revById(revId);
+      if (!rev) return;
+      let src;
+      let parentSrc;
+      try {
+        src = await sourceOf(rev);
+        parentSrc = (await sourceOf(revById(rev.parent_id))) || "";
+      } catch (err) {
+        toast(`Could not load the script of R${rev.number}: ${err.message}`);
+        return;
+      }
+      if (ticket !== st.loading) return; // a newer load superseded this one
+      st.viewRev = revId;
+      st.base = src ?? STARTER_SCRIPT;
+      st.parentText = parentSrc;
+      editor.setValue(text ?? st.base);
+      editor.clearError();
+      select.value = revId;
+      describe(rev);
+      hideBanner();
+      if (text != null && text !== st.base) {
+        updateDirty();
+      } else {
+        st.dirty = false;
+        revertBtn.disabled = true;
+        markAgainstParent(animate);
+        saveDraft();
+      }
+      syncButtons();
+      editor.refresh();
+      if (animate && rev.has_source) live.textContent = `Showing the script of R${rev.number}`;
+    }
+
+    function hideBanner() { banner.hidden = true; banner.replaceChildren(); }
+
+    function showBanner(rev) {
+      const load = h("button", { class: "btn btn-secondary", type: "button" }, `Load R${rev.number} script`);
+      load.addEventListener("click", () => show(rev.revision_id));
+      banner.replaceChildren(
+        icon("info-circle"),
+        h("span", {}, `${AUTHOR_LABEL[rev.author] || "Someone"} published R${rev.number}. Your unpublished draft is kept; it will be applied on top of R${rev.number} if you publish it.`),
+        load);
+      banner.hidden = false;
+    }
+
+    function syncButtons() {
+      const cur = current();
+      const busy = st.dry && ACTIVE.has(st.dry.state);
+      const ready = Boolean(cur) && data?.project.status === "ready";
+      dryBtn.disabled = !ready || busy || Boolean(st.awaiting);
+      pubBtn.disabled = !ready || Boolean(st.awaiting) || !editor.getValue().trim();
+      pubBtn.lastChild.textContent = cur ? `Publish as R${(data.revisions[0]?.number ?? cur.number) + 1}` : "Publish";
+      const checked = st.dry && st.dry.state === "succeeded" && st.dry.text === editor.getValue() && st.dry.base === cur?.revision_id;
+      pubBtn.title = checked ? "Publishes the script you just dry-ran" : "Not dry-run in its current form; it is validated when published";
+    }
+
+    function summaryText() {
+      return summary.value.trim() || "Edit from the browser editor";
+    }
+
+    dryBtn.addEventListener("click", () => act(dryBtn, async () => {
+      const cur = current();
+      if (!cur) return;
+      const text = editor.getValue();
+      const res = await api(`/api/projects/${projectId}/edits`, {
+        method: "POST",
+        body: { base_revision_id: cur.revision_id, source: text, summary: summaryText(), dry_run: true, strict_checks: strictBox.checked },
+      });
+      st.dry = { job_id: res.edit_job_id, text, base: cur.revision_id, strict: strictBox.checked, state: "queued", shown: null };
+      renderResult();
+      syncButtons();
+      await load();
+    }));
+
+    pubBtn.addEventListener("click", () => act(pubBtn, async () => {
+      const cur = current();
+      if (!cur) return;
+      const text = editor.getValue();
+      const reuse = st.dry && st.dry.state === "succeeded" && st.dry.text === text && st.dry.base === cur.revision_id && st.dry.strict === strictBox.checked;
+      const body = reuse
+        ? { base_revision_id: cur.revision_id, from_dry_run: st.dry.job_id, summary: summaryText() }
+        : { base_revision_id: cur.revision_id, source: text, summary: summaryText(), strict_checks: strictBox.checked };
+      const res = await api(`/api/projects/${projectId}/edits`, { method: "POST", body });
+      st.awaiting = { job_id: res.edit_job_id, text, state: "queued" };
+      result.replaceChildren(h("p", { class: "stale-note" }, stateEl("running"), "Publishing: running, validating and rendering in Blender."));
+      syncButtons();
+      await load();
+    }));
+
+    revertBtn.addEventListener("click", () => {
+      if (st.viewRev) show(st.viewRev, { animate: false });
+    });
+
+    select.addEventListener("change", () => {
+      if (st.dirty && !window.confirm("Replace your unpublished changes with this revision's script?")) {
+        select.value = st.viewRev || "";
+        return;
+      }
+      show(select.value);
+    });
+
+    async function renderResult() {
+      const dry = st.dry;
+      if (!dry) return;
+      if (ACTIVE.has(dry.state)) {
+        result.replaceChildren(h("p", { class: "stale-note" }, stateEl("running"), "Dry run: running the script, checking protection and geometry, rendering."));
+        return;
+      }
+      if (dry.shown === dry.state) return;
+      dry.shown = dry.state;
+      let job;
+      try {
+        job = await api(`/api/jobs/${dry.job_id}`);
+      } catch (err) {
+        result.replaceChildren(problem({ message: err.message }, "Could not load the dry run"));
+        return;
+      }
+      if (job.state === "failed") {
+        result.replaceChildren(problem(job.error || {}, "Dry run failed. Nothing was saved."));
+        const line = job.error?.details?.line;
+        if (line && editor.getValue() === dry.text) editor.markError(line);
+        return;
+      }
+      const r = job.result || {};
+      const images = (job.artifacts || []).filter((a) => a.kind === "render_image" && (a.view.endsWith("--highlight") || (a.view.startsWith("closeup_") && !a.view.includes("--"))));
+      const checks = checkItems(r.checks);
+      result.replaceChildren(
+        h("div", { class: "code-ok" }, icon("shield-check"), h("b", {}, "Dry run passed. "), changeLine(r.changes), ". Not saved yet."),
+        checks.length ? h("ul", { class: "checks" }, checks) : "",
+        r.render_error ? problem(r.render_error, "The preview could not be rendered") : "",
+        images.length ? h("div", { class: "code-previews" }, images.map((a) => h("figure", { class: "ref" },
+          h("a", { href: a.url, target: "_blank", rel: "noopener" }, h("img", { src: a.url, alt: `${a.view} preview`, loading: "lazy" })),
+          h("figcaption", {}, h("span", {}, a.view.replace("--highlight", " (changes)").replace("closeup_", "close-up "))))) ) : "",
+        r.script_output ? h("details", { class: "report" }, h("summary", {}, "Script output"), h("pre", {}, r.script_output)) : "",
+      );
+    }
+
+    function trackJobs() {
+      const byId = Object.fromEntries(data.jobs.map((j) => [j.job_id, j]));
+      if (st.dry) {
+        const j = byId[st.dry.job_id];
+        if (j && j.state !== st.dry.state) {
+          st.dry.state = j.state;
+          renderResult();
+        }
+      }
+      if (st.awaiting) {
+        const j = byId[st.awaiting.job_id];
+        if (j && j.state === "failed") {
+          result.replaceChildren(problem(j.error || {}, "Publishing failed. Nothing was saved."));
+          const line = j.error?.details?.line;
+          if (line && editor.getValue() === st.awaiting.text) editor.markError(line);
+          st.awaiting = null;
+        } else if (j && j.state === "succeeded") {
+          st.awaiting.revision_id = j.revision_id;
+        }
+      }
+    }
+
+    function syncOptions() {
+      const sig = data.revisions.map((r) => r.revision_id).join(",");
+      if (sig === st.revSig) return;
+      st.revSig = sig;
+      select.replaceChildren(...data.revisions.map((r) => h("option", { value: r.revision_id },
+        `R${r.number} · ${AUTHOR_LABEL[r.author] || r.author}${r.has_source ? "" : " (no script)"}`)));
+      if (st.viewRev) select.value = st.viewRev;
+    }
+
+    return {
+      el: section,
+      sync() {
+        if (!data) return;
+        syncOptions();
+        trackJobs();
+        syncButtons();
+        const cur = current();
+        if (!cur) caption.textContent = "Code editing opens once the import finishes.";
+        if (!cur || cur.revision_id === st.lastCurrent) return;
+        const first = st.lastCurrent === null;
+        st.lastCurrent = cur.revision_id;
+        if (first) {
+          const draft = readDraft();
+          const draftRev = draft && revById(draft.rev) ? draft.rev : cur.revision_id;
+          show(draftRev, { animate: !draft, text: draft?.text ?? null }).then(() => {
+            if (draft && st.dirty) toast("Restored your unpublished draft.");
+          });
+          return;
+        }
+        const mine = st.awaiting && st.awaiting.revision_id === cur.revision_id;
+        if (mine) {
+          st.awaiting = null;
+          result.replaceChildren(h("div", { class: "code-ok" }, icon("check"), h("b", {}, `Published as R${cur.number}.`), " The renders update when Blender finishes."));
+          summary.value = "";
+        }
+        if (mine || !st.dirty) show(cur.revision_id);
+        else showBanner(cur);
+      },
+      showRevision(revId) {
+        if (st.dirty && revId !== st.viewRev && !window.confirm("Replace your unpublished changes with this revision's script?")) return;
+        show(revId);
+        section.scrollIntoView({ behavior: REDUCE_MOTION ? "auto" : "smooth", block: "start" });
+      },
+      refresh: () => editor.refresh(),
+    };
+  }
+  const code = codePanel();
+  codeSlot.append(code.el);
+  code.refresh();
 
   let lastAnnounced = "";
   function announce() {
@@ -818,6 +1212,11 @@ function workspaceScreen(projectId) {
     patch("brief", brief, [data.project.brief, data.project.references], renderBrief);
     patch("jobs", jobs, [data.jobs, data.jobs_total, jobsExpanded, history.length, data.revisions.length, data.jobs.some((j) => j.state === "running") ? Math.floor(Date.now() / 5000) : 0], renderJobs);
     patch("revs", revs, [data.revisions, data.current_revision?.revision_id], renderRevisions);
+    try {
+      code.sync();
+    } catch (err) {
+      console.error("Could not update the code panel", err);
+    }
     announce();
     return data.jobs.some((j) => ACTIVE.has(j.state)) || data.project.status === "importing";
   }
