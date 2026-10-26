@@ -1,0 +1,46 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Local runtime data and tooling
+data/
+.impeccable/review/
+.impeccable/mocks/
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.impeccable/questions/
+
+# Generated QA output (screenshots, result dumps); the QA scripts stay tracked
+qa/artifacts/
+
+# Secrets and local credentials: never commit
+.env
+.env.*
+*.pem
+*.key
+mcp_token
+.aws/
+
+# Local agent / tool state
+.codex/
+.agents/
+.claude/settings.local.json
+
+# Models, exports and renders produced while working with the app
+*.blend
+*.blend1
+*.stl
+
+# Editors and OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

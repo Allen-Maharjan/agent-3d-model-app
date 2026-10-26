@@ -1,0 +1,99 @@
+{
+  "title": "Choose the visual world for Sculpt Workspace",
+  "question": "The roll assigned Quarry Block Marking. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Quarry Block Marking",
+      "kicker": "THE ROLL",
+      "lineage": "Carrara marble blocks stencilled with lot numbers and paint marks before they leave the quarry",
+      "thesis": "Every revision is a numbered block cut from the original; the original carries the quarry's protected mark.",
+      "palette": ["#E9E8E4", "#2B2D2F", "#B5432A", "#3D5A80", "#8A8C86"],
+      "materials": ["marble-dust grey ground", "stencilled iron-oxide lot numerals", "slate ink"],
+      "viewport": "Top bar + workspace: a 2x2 render plate grid at left, a revision rail at right where each revision is a stencilled block number; the original block wears a red protected mark.",
+      "risk": "Stencil numerals can tip into costume if used beyond revision numbers.",
+      "raised": [
+        {"from": "challenger-folio", "raise": "Render plates register at one fixed scale and baseline so revisions compare frame-for-frame."},
+        {"from": "challenger-annual", "raise": "Plate corners carry registration crosshairs that echo each render's camera frame metadata."},
+        {"from": "challenger-rail", "raise": "Job state reads in line form as well as hue: dashed queued, solid running, struck failed."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Conservation Condition Report",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "museum registrar object files and condition reports",
+      "thesis": "Each project is an accessioned object; each revision a dated condition entry against the original.",
+      "palette": ["#F4F1EA", "#1F2A36", "#C23B2E", "#6B7A6A"],
+      "materials": ["archival card stock", "accession-number ink", "red condition annotation"],
+      "viewport": "An object file: accession UUID header, four views as catalogue photographs, a ledger of condition entries.",
+      "risk": "Familiar archival-paper look; the most likely landing for this category."
+    },
+    {
+      "id": "challenger-annual",
+      "label": "Design Annual Plate Section",
+      "verdict": "competitive",
+      "lineage": "design annual plate pages with registration furniture",
+      "thesis": "Renders presented as registered plates on near-white stock with hairline credit rows.",
+      "palette": ["#F5F4F6", "#16181A", "#DCDDF3", "#C9C7C4"],
+      "materials": ["uncoated stock", "registration crosshairs", "hairline rules"],
+      "viewport": "A 4-up plate row of renders with mono credit rows beneath each.",
+      "case": "Fuses cleanly on render presentation; weaker on revision and protection story.",
+      "risk": "Reads as a portfolio rather than a supervisor console.",
+      "hero": "https://impeccable.style/worlds/cards/design-annual-s-plate-section-hero.webp"
+    },
+    {
+      "id": "challenger-folio",
+      "label": "Botanical Folio",
+      "verdict": "declined",
+      "lineage": "botanical plates at fixed scale across seasons",
+      "thesis": "One subject tracked through stages at identical scale.",
+      "palette": ["#F3ECDD", "#5E4B3C", "#3F6B3A", "#B8322A"],
+      "materials": ["cream plates", "sepia hairlines"],
+      "viewport": "Five fixed-scale plates on one baseline.",
+      "case": "Revision comparison maps well, but cream-and-serif is the wrong register for a tech artist's console.",
+      "kept": "Fixed-scale registration of plates across revisions.",
+      "risk": "Cream paper default.",
+      "hero": "https://impeccable.style/worlds/cards/editorial-sequence-montage-botanical-folio-season-hero.webp"
+    },
+    {
+      "id": "challenger-rail",
+      "label": "Emission Line Rail",
+      "verdict": "declined",
+      "lineage": "spectrogram plates",
+      "thesis": "State carried by line form on a charcoal continuum.",
+      "palette": ["#2A2B2D", "#E6E1D3", "#F5C542"],
+      "materials": ["charcoal continuum", "hairline emission lines"],
+      "viewport": "Everything hangs off one off-centre rail.",
+      "case": "Instrument costume on a working screen; obscures standard navigation.",
+      "kept": "State encoded in line form, not only hue.",
+      "risk": "Unreadable for routine tasks.",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-emission-line-rail-hero.webp"
+    },
+    {
+      "id": "challenger-goods",
+      "label": "Character Goods Catalog",
+      "verdict": "declined",
+      "lineage": "mascot goods catalogs",
+      "thesis": "Ranked roster of pastel cells.",
+      "palette": ["#FCE4EC", "#FFFFFF", "#FF6F91"],
+      "materials": ["pastel flat fills", "keylines"],
+      "viewport": "A pastel grid of project cells.",
+      "case": "No fit with protected-geometry supervision.",
+      "kept": "Whole-cell reflow of the recent-projects list.",
+      "risk": "Toy register.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-character-goods-catalog-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean dark dev-tool dashboard, executed impeccably.",
+    "palette": ["#0F1115", "#E6E8EB", "#4F8CFF"],
+    "materials": ["clean grid", "neutral panels"],
+    "viewport": "Sidebar, job table, render grid.",
+    "risk": "Indistinguishable from every other dev dashboard."
+  },
+  "steer": true
+}

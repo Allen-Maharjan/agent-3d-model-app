@@ -1,0 +1,134 @@
+Sculpt Workspace QA — 26 October 2026
+
+Disposition: changes required before release.
+
+Scope and evidence
+------------------
+52 backend checks cover HTTP input validation, sessions, CSRF, Host/Origin
+validation, MCP authentication/tool discovery/image responses, SQLite,
+publication rollback, queue capacity, restart recovery, project ownership,
+revision checkout, rejected edits, render fallback, downloads, STL unit
+parameters, briefs, reference images, and dry-run revision preservation.
+One backend characterization deliberately confirms the active-job visibility
+defect; a green backend suite does not mean that defect is fixed.
+
+Chrome browser QA: 41 assertions, 34 passed and 7 failed. The seven failures
+map to five distinct defects below. Tested Projects and Workspace at 320,
+375, 768, 1024, and 1440 CSS pixels in light and dark modes, keyboard access
+to file upload, upload validation, navigation, render image loading, STL
+export, filename escaping, missing projects, and real missing-Blender recovery.
+No uncaught JavaScript exceptions were recorded. The query failure below is
+caught by application code and shown in a toast, so that metric misses it.
+
+Final lint, formatting, mypy, and JavaScript syntax checks passed. A formatting
+failure seen at the beginning was resolved by concurrent workspace changes.
+No application fixes were made as part of this QA. Tests, runners, screenshots,
+and this report were added. Existing application work was preserved.
+
+Confirmed defects, ordered by impact
+-----------------------------------
+
+QA-01 — HIGH: a completed spatial query breaks Jobs and Revisions rendering.
+Location: src/sculpt_workspace/web/static/app.js, renderJobs(), query result.
+Reproduction:
+  1. Import a project and obtain its current revision ID.
+  2. POST /api/projects/{project_id}/inspect with that revision and
+     query={"type":"nearest","point":[0,0,0]}.
+  3. Wait for success, then open or reload the workspace.
+Actual: Jobs and Revisions are absent; a toast reports
+"Cannot read properties of undefined (reading 'slice')". Existing STL links
+and checkout actions become inaccessible through the missing panels.
+Cause: the API stores query fields directly in job.result. The browser reads
+j.result.result, then calls .slice() on JSON.stringify(undefined).
+The patch helper also records a signature before rendering succeeds, so
+unchanged data can suppress a subsequent retry of that panel.
+Expected: display the query payload and continue rendering all panels.
+Evidence: artifacts/query-result-desktop.png; browser-results.json.
+Suggested fix: render the actual result contract and record patch signatures
+only after a successful render; add a browser regression for completed queries.
+
+QA-02 — MEDIUM: older active jobs disappear behind newer queued jobs.
+Locations: app.js renderJobs() slices the first 8; repositories.py list_jobs()
+returns only the newest 30; neither offers a complete job-history UI.
+Reproduction: keep a long job running and submit at least eight additional
+jobs to the same project. With 30 newer queued jobs, inspect project detail.
+Actual: the browser omits the running job; with 30 newer jobs the project API
+also omits it. An individually fetched job still reports running.
+Expected: active jobs remain discoverable and the actual running job is visible.
+Evidence: artifacts/hidden-active-job.png uses an explicit response fixture;
+test_active_job_hidden_by_history_limit_characterization uses real SQLite.
+Suggested fix: include all active jobs independently of bounded history, and
+provide pagination or a history view for older completed jobs and exports.
+
+QA-03 — MEDIUM: a valid long filename breaks the Projects layout.
+Locations: app.css .projects-grid, .table, .project-name, .cell-sub.
+Reproduction: upload a valid file named 120 consecutive A characters + .blend.
+Return to Projects at desktop or 375px width.
+Actual: the filename expands the table beyond the viewport; the remaining
+columns become offscreen. Both desktop and phone assertions fail.
+Expected: wrap long project names and identifiers within the table/grid.
+Evidence: artifacts/projects-long-filename.png and
+artifacts/projects-long-filename-mobile.png.
+Suggested fix: constrain the grid/table's minimum width and wrap long names.
+
+QA-04 — LOW: intake state labels overlap adjacent stage descriptions.
+Location: app.css .stage uses a 28px first column for a text-bearing .state.
+Reproduction: choose a non-.blend file and inspect the upload stage list.
+Actual: labels such as "Queued" overrun their grid column into descriptions.
+Expected: enough space for both the state line and its text label.
+Evidence: artifacts/upload-error-desktop.png; text-range overlap assertion.
+Suggested fix: size the state column to its contents or give it adequate width.
+
+QA-05 — LOW: the engine notice remains visible when marked hidden.
+Location: app.css .notice sets display:flex without a [hidden] override.
+Reproduction: start the app with an available engine and open Projects.
+Actual: #engine-notice.hidden is true but computed display is flex, leaving
+an empty red warning strip under the navigation bar.
+Expected: no notice while the engine is available.
+Evidence: artifacts/workspace-desktop.png and healthy-engine browser assertion.
+Suggested fix: respect [hidden] when applying the notice's display rule.
+
+Coverage limits
+---------------
+Blender is not installed. Successful engine-backed paths used a clearly marked
+synthetic Runner with generated PNGs and dummy blend/STL bytes. These checks
+validate orchestration, storage, responses, and the browser; they do not prove
+geometry preservation, real import/export, numerical STL scaling, image quality,
+ray accuracy, modifiers, material output, or Blender-version compatibility.
+Real geometry checks, overlay alignment, additional render passes, and closeups
+still require Blender integration with representative sculptures. Dry-run checks
+prove no revision publication and artifact delivery with synthetic output only.
+
+Chrome was tested; Safari/Firefox, actual mobile devices, assistive technology,
+full WCAG conformance, upload performance at 512 MiB, and sustained load were
+not tested. Responsive checks use viewport emulation, not a mobile browser.
+Reference/brief backend contracts were tested; their browser controls were not
+given a separate complete interaction pass. Reference-size limits were not
+stress-tested at their full configured byte limit.
+
+Application files changed concurrently during the session, including new brief,
+reference, rendering, and agent-edit features. Final backend checks target the
+files available at the final run. Browser evidence targets the temporary server
+started during this session and the assets it served. Source hashes are recorded
+in artifacts/source-manifest.json to help identify subsequent changes.
+
+Reproduction commands
+---------------------
+  .venv/bin/pytest -q --junitxml=qa/artifacts/backend-results.xml
+  .venv/bin/ruff check src tests qa/server.py
+  .venv/bin/ruff format --check src tests qa/server.py
+  .venv/bin/mypy
+  node --check src/sculpt_workspace/web/static/app.js
+
+Browser harness requires Node 24, Chrome, the synthetic server on 18766, and
+the ordinary app without Blender on 18765, each using disposable data:
+  .venv/bin/python qa/server.py
+  SCULPT_DATA_DIR=<temporary directory> SCULPT_PORT=18765 \
+    .venv/bin/python -m sculpt_workspace
+  google-chrome --headless=new --disable-gpu --no-sandbox \
+    --remote-debugging-port=19223 --user-data-dir=<temporary directory> about:blank
+  node qa/browser.mjs
+
+Use an isolated browser profile; the harness controls its first page. Browser
+results are saved under qa/artifacts and the harness exits nonzero on failed
+assertions. Synthetic server data is discarded on shutdown.

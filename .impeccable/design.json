@@ -1,0 +1,549 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-26T07:02:01+00:00",
+  "title": "Design System: Sculpt Workspace",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Marble Dust",
+        "canonical": "#e1e4e6",
+        "oklch": "oklch(91.7% 0.004 236.5)",
+        "dark": "#201f1d",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232527",
+          "#404244",
+          "#5f6263",
+          "#808384",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#eceff1"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Polished Face",
+        "canonical": "#eceef0",
+        "oklch": "oklch(94.8% 0.003 247.9)",
+        "dark": "#2a2927",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606163",
+          "#818284",
+          "#a3a5a7",
+          "#c7c9cb",
+          "#edeff1"
+        ]
+      },
+      "surface-sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Face",
+        "canonical": "#d6d9dc",
+        "oklch": "oklch(88.4% 0.005 247.9)",
+        "dark": "#191816",
+        "tonalRamp": [
+          "#090b0d",
+          "#232528",
+          "#404245",
+          "#5f6164",
+          "#808385",
+          "#a2a5a8",
+          "#c6c9cc",
+          "#eceff2"
+        ]
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Slate Plate",
+        "canonical": "#3a3d40",
+        "oklch": "oklch(35.8% 0.007 248.0)",
+        "dark": "#302f2d",
+        "tonalRamp": [
+          "#090b0e",
+          "#232528",
+          "#3f4245",
+          "#5e6265",
+          "#7f8386",
+          "#a2a5a9",
+          "#c6cacd",
+          "#ebeff3"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "#1f2427",
+        "oklch": "oklch(25.7% 0.009 234.1)",
+        "dark": "#e7e6e2",
+        "tonalRamp": [
+          "#080c0e",
+          "#212629",
+          "#3d4346",
+          "#5c6266",
+          "#7d8387",
+          "#a0a6aa",
+          "#c4cace",
+          "#e9f0f4"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Slate 2",
+        "canonical": "#454c52",
+        "oklch": "oklch(41.2% 0.014 243.9)",
+        "dark": "#bdbfbd",
+        "tonalRamp": [
+          "#070c11",
+          "#20262b",
+          "#3c4349",
+          "#5b6269",
+          "#7c838a",
+          "#9ea6ad",
+          "#c2cad1",
+          "#e7f0f7"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Slate 3",
+        "canonical": "#565d63",
+        "oklch": "oklch(47.4% 0.013 243.9)",
+        "dark": "#9da1a2",
+        "tonalRamp": [
+          "#070c10",
+          "#20262b",
+          "#3c4349",
+          "#5b6268",
+          "#7c838a",
+          "#9ea6ad",
+          "#c2cad1",
+          "#e7f0f7"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#b4b9bd",
+        "oklch": "oklch(78.3% 0.008 241.7)",
+        "dark": "#403e3a",
+        "tonalRamp": [
+          "#080c0e",
+          "#222629",
+          "#3e4346",
+          "#5d6265",
+          "#7e8387",
+          "#a1a6aa",
+          "#c5cace",
+          "#eaeff3"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#81878c",
+        "oklch": "oklch(62.0% 0.010 242.9)",
+        "dark": "#646059",
+        "tonalRamp": [
+          "#080c0f",
+          "#21262a",
+          "#3d4347",
+          "#5c6267",
+          "#7d8388",
+          "#a0a6ab",
+          "#c4cacf",
+          "#e9eff5"
+        ]
+      },
+      "mark": {
+        "role": "primary",
+        "displayName": "Iron-Oxide Quarry Mark",
+        "canonical": "#a3361d",
+        "oklch": "oklch(48.9% 0.149 34.2)",
+        "dark": "#c4553a",
+        "tonalRamp": [
+          "#1c0200",
+          "#460e03",
+          "#791901",
+          "#a4371e",
+          "#cb5b41",
+          "#f37f64",
+          "#fdb5a3",
+          "#ffe9e4"
+        ]
+      },
+      "mark-hover": {
+        "role": "primary",
+        "displayName": "Burnt Oxide",
+        "canonical": "#8c2d17",
+        "oklch": "oklch(43.7% 0.133 34.3)",
+        "dark": "#d4654a",
+        "tonalRamp": [
+          "#1c0200",
+          "#460e03",
+          "#791a02",
+          "#9e3e28",
+          "#c56149",
+          "#ec846b",
+          "#fcb5a3",
+          "#ffe9e4"
+        ]
+      },
+      "mark-ink": {
+        "role": "primary",
+        "displayName": "Oxide Ink",
+        "canonical": "#962f18",
+        "oklch": "oklch(45.7% 0.142 34.0)",
+        "dark": "#e98a6f",
+        "tonalRamp": [
+          "#1d0200",
+          "#480b01",
+          "#771d07",
+          "#a23a23",
+          "#c95d45",
+          "#f08167",
+          "#fbb6a5",
+          "#fee9e4"
+        ]
+      },
+      "on-mark": {
+        "role": "primary",
+        "displayName": "On Mark",
+        "canonical": "#fbf9f7",
+        "oklch": "oklch(98.3% 0.003 67.8)",
+        "dark": "#1a1210",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#262523",
+          "#434240",
+          "#62615f",
+          "#848280",
+          "#a6a5a3",
+          "#cbc9c7",
+          "#f0eeec"
+        ]
+      },
+      "blue": {
+        "role": "secondary",
+        "displayName": "Quarry Blue",
+        "canonical": "#2c5375",
+        "oklch": "oklch(43.0% 0.072 246.7)",
+        "dark": "#8db4d8",
+        "tonalRamp": [
+          "#000c1a",
+          "#032742",
+          "#1e4566",
+          "#3e6588",
+          "#5e87ab",
+          "#80aad0",
+          "#a3cef6",
+          "#e2f1ff"
+        ]
+      },
+      "blue-soft": {
+        "role": "secondary",
+        "displayName": "Blue Wash",
+        "canonical": "#d3dce3",
+        "oklch": "oklch(89.0% 0.014 241.0)",
+        "dark": "#253645",
+        "tonalRamp": [
+          "#060c10",
+          "#1f262b",
+          "#3c4349",
+          "#5b6268",
+          "#7b848a",
+          "#9ea6ad",
+          "#c2cad1",
+          "#e7f0f7"
+        ]
+      },
+      "fault": {
+        "role": "tertiary",
+        "displayName": "Fault Crimson",
+        "canonical": "#8a1c2c",
+        "oklch": "oklch(41.8% 0.144 18.7)",
+        "dark": "#f08b98",
+        "tonalRamp": [
+          "#1d0103",
+          "#4c010f",
+          "#7d0a22",
+          "#a33540",
+          "#ca5960",
+          "#f27c81",
+          "#fcb3b4",
+          "#fee8e8"
+        ]
+      },
+      "fault-soft": {
+        "role": "tertiary",
+        "displayName": "Fault Wash",
+        "canonical": "#f0dcdc",
+        "oklch": "oklch(91.1% 0.022 17.6)",
+        "dark": "#3a1f25",
+        "tonalRamp": [
+          "#130708",
+          "#2f2121",
+          "#4d3d3e",
+          "#6d5c5d",
+          "#8f7d7d",
+          "#b3a0a0",
+          "#d7c4c4",
+          "#fde9e9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Stencil Display",
+        "purpose": "Current revision block in the workspace header only."
+      },
+      "numeral": {
+        "displayName": "Stencil Numeral",
+        "purpose": "Revision blocks in the rail and tables (0.95rem in the small block)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles and project name."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section titles, wordmark, empty-state leads."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text, tabular numerals."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, table cells, captions, job rows."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Job states, revision meta, protection verdicts, Current badge."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "UUIDs, file names, report output; select-all."
+      }
+    },
+    "shadows": [
+      {
+        "name": "plate-lift",
+        "value": "0 1px 2px rgb(32 36 39 / 0.08), 0 6px 18px rgb(32 36 39 / 0.07)",
+        "dark": "0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25)",
+        "purpose": "Render plates only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All state transitions."
+      },
+      {
+        "name": "state-transition",
+        "value": "160ms",
+        "purpose": "Button and drop-zone colour/border changes."
+      },
+      {
+        "name": "press",
+        "value": "80ms translateY(1px)",
+        "purpose": "Button :active."
+      },
+      {
+        "name": "toast",
+        "value": "180ms",
+        "purpose": "Toast fade and 12px rise."
+      },
+      {
+        "name": "running-pulse",
+        "value": "1.4s opacity 1 to 0.35",
+        "purpose": "Running job line."
+      },
+      {
+        "name": "loading-sheen",
+        "value": "1.6s linear",
+        "purpose": "Plate loading placeholder."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All animation and transition under prefers-reduced-motion."
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--focus); outline-offset: 2px",
+      "purpose": "Universal :focus-visible ring in quarry blue."
+    },
+    "breakpoints": [
+      {
+        "name": "wide-stack",
+        "value": "1080px"
+      },
+      {
+        "name": "tablet",
+        "value": "860px"
+      },
+      {
+        "name": "phone",
+        "value": "640px"
+      }
+    ],
+    "layout": {
+      "maxWidth": "1480px",
+      "topbarHeight": "56px"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one primary action per view, in the quarry mark.",
+      "html": "<button class=\"ds-btn ds-btn-primary\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2\"/><path d=\"M7 11l5 5l5 -5\"/><path d=\"M12 4l0 12\"/></svg>Download R3 .blend</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid transparent;border-radius:0;font-family:Barlow,ui-sans-serif,system-ui,sans-serif;font-weight:500;font-size:0.875rem;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),border-color 160ms cubic-bezier(0.16, 1, 0.3, 1),transform 80ms cubic-bezier(0.16, 1, 0.3, 1)} .ds-icon{width:18px;height:18px} .ds-btn-primary{background:#a3361d;color:#fbf9f7} .ds-btn-primary:hover{background:#8c2d17} .ds-btn:active{transform:translateY(1px)} .ds-btn:focus-visible{outline:2px solid #2c5375;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting actions: choose file, export, retry.",
+      "html": "<button class=\"ds-btn2\">Export STL</button>",
+      "css": ".ds-btn2{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;background:#eceef0;color:#1f2427;border:1px solid #81878c;border-radius:0;font-family:Barlow,ui-sans-serif,system-ui,sans-serif;font-weight:500;font-size:0.875rem;cursor:pointer;transition:border-color 160ms cubic-bezier(0.16, 1, 0.3, 1),transform 80ms cubic-bezier(0.16, 1, 0.3, 1)} .ds-btn2:hover{border-color:#1f2427} .ds-btn2:active{transform:translateY(1px)} .ds-btn2:focus-visible{outline:2px solid #2c5375;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Compact icon or text actions such as copy UUID and checkout.",
+      "html": "<button class=\"ds-ghost\">Check out</button>",
+      "css": ".ds-ghost{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 8px;background:transparent;color:#454c52;border:0;border-radius:0;font-family:Barlow,ui-sans-serif,system-ui,sans-serif;font-weight:500;font-size:0.875rem;cursor:pointer;transition:background-color 160ms cubic-bezier(0.16, 1, 0.3, 1)} .ds-ghost:hover{background:#d6d9dc;color:#1f2427} .ds-ghost:focus-visible{outline:2px solid #2c5375;outline-offset:2px}"
+    },
+    {
+      "name": "Export Select",
+      "kind": "input",
+      "refersTo": "select",
+      "description": "Square select butted against its button.",
+      "html": "<span class=\"ds-grp\"><select class=\"ds-select\"><option>STL in mm</option></select><button class=\"ds-btn2\">Export STL</button></span>",
+      "css": ".ds-grp{display:inline-flex} .ds-select{min-height:40px;padding:0 12px;border:1px solid #81878c;border-right:0;border-radius:0;background:#eceef0;color:#1f2427;font-family:Barlow,sans-serif;font-size:0.875rem} .ds-select:focus-visible{outline:2px solid #2c5375;outline-offset:2px} .ds-btn2{min-height:40px;padding:0 16px;background:#eceef0;color:#1f2427;border:1px solid #81878c;border-radius:0;font-family:Barlow,sans-serif;font-weight:500;font-size:0.875rem;cursor:pointer} .ds-btn2:hover{border-color:#1f2427}"
+    },
+    {
+      "name": "Top Bar",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Sticky bar: notched wordmark, Projects link, engine status.",
+      "html": "<header class=\"ds-top\"><a class=\"ds-wm\" href=\"#\"><span class=\"ds-wm-mark\"></span>Sculpt Workspace</a><a class=\"ds-nav\" aria-current=\"page\" href=\"#\">Projects</a><span class=\"ds-engine\">Blender 4.2 ready</span></header>",
+      "css": ".ds-top{display:flex;align-items:center;gap:24px;height:56px;padding:0 24px;background:#eceef0;border-bottom:1px solid #b4b9bd;font-family:Barlow,sans-serif;color:#1f2427} .ds-wm{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:1.125rem;letter-spacing:-0.01em;text-decoration:none;color:inherit} .ds-wm-mark{width:14px;height:14px;background:#a3361d;clip-path:polygon(0 0,100% 0,100% 100%,58% 100%,58% 62%,42% 62%,42% 100%,0 100%)} .ds-nav{font-weight:500;color:#454c52;text-decoration:none;padding:8px 0;border-bottom:2px solid transparent} .ds-nav:hover{color:#1f2427} .ds-nav[aria-current=page]{color:#1f2427;border-bottom-color:#1f2427} .ds-nav:focus-visible{outline:2px solid #2c5375;outline-offset:2px} .ds-engine{margin-left:auto;font-size:0.875rem;color:#454c52}"
+    },
+    {
+      "name": "Revision Blocks",
+      "kind": "custom",
+      "refersTo": "revision-block",
+      "description": "Stencilled revision numerals; current inverts to ink, the original carries the red corner tag.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-block ds-orig\">R1</span><span class=\"ds-block\">R2</span><span class=\"ds-block ds-cur\">R3</span><span class=\"ds-block ds-empty\">R–</span></div>",
+      "css": "@font-face{font-family:'Saira Stencil One';src:url('/static/fonts/SairaStencilOne-Regular.ttf') format('truetype')} .ds-row{display:flex;gap:12px} .ds-block{position:relative;display:inline-grid;place-items:center;min-width:44px;height:36px;padding:0 8px;font-family:'Saira Stencil One',Barlow,sans-serif;font-size:1.25rem;line-height:1;letter-spacing:0.02em;color:#1f2427;background:#eceef0;border:1px solid #81878c} .ds-cur{background:#1f2427;color:#e1e4e6;border-color:#1f2427} .ds-orig::after{content:'';position:absolute;top:-1px;right:-1px;width:9px;height:9px;background:#a3361d;clip-path:polygon(0 0,100% 0,100% 100%)} .ds-empty{color:#565d63;border-style:dashed}"
+    },
+    {
+      "name": "Line-Form Job State",
+      "kind": "chip",
+      "refersTo": "",
+      "description": "State as line style plus hue: dashed queued, solid running, struck failed, dotted cancelled.",
+      "html": "<div class=\"ds-states\"><span class=\"ds-st ds-q\">Queued</span><span class=\"ds-st ds-run\">Running</span><span class=\"ds-st ds-ok\">Succeeded</span><span class=\"ds-st ds-fail\">Failed</span><span class=\"ds-st ds-can\">Cancelled</span></div>",
+      "css": ".ds-states{display:grid;gap:8px;font-family:Barlow,sans-serif} .ds-st{display:inline-flex;align-items:center;gap:8px;font-size:0.75rem;font-weight:500;color:#454c52} .ds-st::before{content:'';width:22px;height:0;border-top:2px solid currentColor} .ds-q::before{border-top-style:dashed} .ds-run{color:#2c5375} .ds-run::before{border-top-width:3px;animation:ds-pulse 1.4s cubic-bezier(0.16, 1, 0.3, 1) infinite} .ds-ok{color:#1f2427} .ds-fail{color:#8a1c2c} .ds-fail::before{height:10px;border-top:0;background:linear-gradient(currentColor,currentColor) center/100% 2px no-repeat,linear-gradient(60deg,transparent 45%,currentColor 45% 55%,transparent 55%) center/10px 10px no-repeat} .ds-can{color:#565d63} .ds-can::before{border-top-style:dotted} @keyframes ds-pulse{50%{opacity:.35}}"
+    },
+    {
+      "name": "Render Plate",
+      "kind": "card",
+      "refersTo": "render-plate",
+      "description": "Fixed-scale square plate, the only lifted surface, with registration crosshairs and a view/camera caption.",
+      "html": "<figure class=\"ds-plate\"><div class=\"ds-frame\"></div><figcaption class=\"ds-cap\"><b>front</b><span>from -Y, up +Z</span></figcaption></figure>",
+      "css": ".ds-plate{margin:16px;width:220px;font-family:Barlow,sans-serif} .ds-frame{position:relative;aspect-ratio:1;background:#3a3d40;box-shadow:0 1px 2px rgb(32 36 39 / 0.08),0 6px 18px rgb(32 36 39 / 0.07)} .ds-frame::before{content:'';position:absolute;inset:-9px;pointer-events:none;--c:#81878c;background:linear-gradient(var(--c),var(--c)) left 0 top 8px/7px 1px no-repeat,linear-gradient(var(--c),var(--c)) left 8px top 0/1px 7px no-repeat,linear-gradient(var(--c),var(--c)) right 0 top 8px/7px 1px no-repeat,linear-gradient(var(--c),var(--c)) right 8px top 0/1px 7px no-repeat,linear-gradient(var(--c),var(--c)) left 0 bottom 8px/7px 1px no-repeat,linear-gradient(var(--c),var(--c)) left 8px bottom 0/1px 7px no-repeat,linear-gradient(var(--c),var(--c)) right 0 bottom 8px/7px 1px no-repeat,linear-gradient(var(--c),var(--c)) right 8px bottom 0/1px 7px no-repeat} .ds-cap{display:flex;justify-content:space-between;gap:8px;padding-top:8px;font-size:0.875rem;color:#1f2427} .ds-cap b{font-weight:600;text-transform:capitalize} .ds-cap span{color:#565d63}"
+    },
+    {
+      "name": "Problem Callout",
+      "kind": "card",
+      "refersTo": "problem-callout",
+      "description": "Failure stated verbatim with recovery, in Fault Crimson, never the quarry mark.",
+      "html": "<div class=\"ds-prob\"><div class=\"ds-prob-t\">Edit rejected</div><p>Object Body_042 is protected geometry and was modified.</p></div>",
+      "css": ".ds-prob{padding:12px 16px;background:#f0dcdc;color:#1f2427;border:1px solid color-mix(in srgb,#8a1c2c 45%,transparent);font-family:Barlow,sans-serif;font-size:0.875rem} .ds-prob-t{font-weight:600;color:#8a1c2c} .ds-prob p{margin:4px 0 0}"
+    },
+    {
+      "name": "Drop Zone",
+      "kind": "input",
+      "refersTo": "",
+      "description": "Flat dashed upload panel; turns solid quarry mark on drag-over.",
+      "html": "<div class=\"ds-drop\" tabindex=\"0\"><p class=\"ds-drop-l\">Drop a .blend file here</p><p class=\"ds-drop-h\">Self-contained files only. Up to 512 MiB.</p></div>",
+      "css": ".ds-drop{display:grid;justify-items:center;gap:12px;padding:48px 24px;text-align:center;background:#eceef0;border:1px dashed #81878c;font-family:Barlow,sans-serif;transition:border-color 160ms cubic-bezier(0.16, 1, 0.3, 1),background-color 160ms cubic-bezier(0.16, 1, 0.3, 1)} .ds-drop:hover{border:1px solid #a3361d;background:color-mix(in srgb,#a3361d 7%,#eceef0)} .ds-drop:focus-visible{outline:2px solid #2c5375;outline-offset:2px} .ds-drop-l{margin:0;font-size:1.375rem;font-weight:600;color:#1f2427} .ds-drop-h{margin:0;max-width:38ch;font-size:0.875rem;color:#454c52}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quarry Ledger",
+    "overview": "Every revision is a numbered block cut from one protected original, marked the way a Carrara quarry stencils lot numbers onto stone. The ground is marble dust: a cool, pale grey. Ink is slate. A single iron-oxide red is the quarry mark, kept for the original, protection status and the one primary action. A muted quarry blue is the second mark and means \"moving or selected\". Everything else is square plates, 1px slate hairlines and plain working type.\n\nThis is a supervisor's console, not an editor, so it runs dense and literal. Machine state is shown verbatim: UUIDs and reports in monospace, job states drawn as lines, failures set in their own crimson callout with the reason and how to recover. The one ornamental move is registration: render plates sit at one fixed scale with crosshairs at their corners, like proofs on a press sheet. The stencil face appears only on revision numerals, which is why the numerals read as marks rather than labels.\n\nIt rejects the category default of a dark developer dashboard with a blue accent and a job table. The drop zone is flat: a dashed hairline on a plain surface, with no texture.",
+    "keyCharacteristics": [
+      "Cool marble-dust ground, slate ink, one iron-oxide mark, one quarry-blue state colour.",
+      "Square corners everywhere (0px); structure comes from 1px hairlines, not fills or shadows.",
+      "Stencilled revision blocks (R1, R2...) are the signature; the original carries a red corner tag.",
+      "Job state is drawn as a line: dashed for queued, solid and pulsing for running, struck for failed, dotted for cancelled.",
+      "Render plates are the only lifted surface, framed by registration crosshairs.",
+      "Tabular numerals everywhere; identifiers are monospaced and select-all."
+    ],
+    "rules": [
+      {
+        "name": "The Quarry Mark Rule",
+        "body": "Iron-oxide red marks the wordmark, the original and its protection, the drop target, and the single primary action on a view. It is never used for errors, decoration or headings.",
+        "section": "colors"
+      },
+      {
+        "name": "The Blue Means Moving Rule",
+        "body": "Quarry blue appears only for running work, progress, the current-revision badge and focus. It is never a generic link or brand accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Fault Is Not The Mark Rule",
+        "body": "Failure uses Fault Crimson (fault) on Fault Wash, a cooler, darker red than the quarry mark, so a rejection is never confused with protected status.",
+        "section": "colors"
+      },
+      {
+        "name": "The Stencil Is For Numbers Rule",
+        "body": "Saira Stencil One sets revision numerals (R1, R2...) and nothing else. Never use it for headings, buttons or the wordmark.",
+        "section": "typography"
+      },
+      {
+        "name": "The Verbatim Rule",
+        "body": "Identifiers and machine output (project UUIDs, revision IDs, reports) are set in monospace with `user-select: all`, and wrap anywhere instead of truncating.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Lifted Plate Rule",
+        "body": "Only render plates cast a shadow. Panels, tables, callouts, toasts and buttons stay flat.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Cut Rule",
+        "body": "No border-radius anywhere. Shape is made with clip-path notches and hairlines, never with rounding.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** keep every corner at 0px and build structure from 1px Hairline and Strong Hairline borders.",
+      "**Do** reserve the iron-oxide mark for the wordmark, the original revision's corner tag, protection verdict icons, the drop-target state and one primary button per view.",
+      "**Do** set revision numbers as stencilled blocks, with the current revision inverted to ink and the original tagged red.",
+      "**Do** show job state as line form plus hue (dashed queued, solid running, struck failed, dotted cancelled), never hue alone.",
+      "**Do** present render views as a fixed-scale 2x2 grid of registered plates with crosshairs and a view/camera caption.",
+      "**Do** surface failures verbatim in a Fault Wash callout that names the problem and the recovery.",
+      "**Do** use tabular numerals and monospace, select-all identifiers.",
+      "**Do** honour `prefers-reduced-motion`; motion is limited to 80-200ms state transitions, the running-line pulse and the loading sheen."
+    ],
+    "donts": [
+      "**Don't** round corners or use pill shapes.",
+      "**Don't** use the quarry red for errors; failures are Fault Crimson.",
+      "**Don't** use quarry blue as a brand or link accent, or build a dark dashboard with a blue accent as the default look.",
+      "**Don't** add shadows to panels, tables, buttons or toasts; only render plates are lifted.",
+      "**Don't** use Saira Stencil One for anything except revision numerals.",
+      "**Don't** add texture, gradients or imagery to the drop zone or page ground; the drop zone is a flat dashed panel.",
+      "**Don't** add uppercase tracked eyebrow labels above titles; section titles stand alone."
+    ]
+  }
+}

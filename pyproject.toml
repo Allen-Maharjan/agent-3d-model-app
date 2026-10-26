@@ -1,0 +1,70 @@
+[project]
+name = "sculpt-workspace"
+version = "0.1.0"
+description = "Local agent-driven sculpture workspace with protected geometry, Blender rendering, and MCP"
+authors = [
+    { name = "allen.maharjan", email = "allen.maharjan@tekvortex.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "fastapi>=0.162.0",
+    "mcp>=2.3.0",
+    "pillow>=13.0.0",
+    "pydantic>=2.14.1",
+    "python-multipart>=0.0.32",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+sculpt-workspace = "sculpt_workspace.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.4.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.1",
+    "ruff>=0.17.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sculpt_workspace"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE", "ASYNC", "RUF"]
+# ASYNC240: small local metadata reads (stat, open of a few bytes) are acceptable on the event loop.
+ignore = ["S101", "S603", "S607", "RUF001", "RUF002", "RUF003", "ASYNC240"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/sculpt_workspace/blender_scripts/*" = ["E402", "S102"]
+"tests/*" = ["S"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["sculpt_workspace"]
+strict_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+exclude = ["src/sculpt_workspace/blender_scripts/"]
+
+[[tool.mypy.overrides]]
+module = "sculpt_workspace.blender_scripts.*"
+ignore_errors = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = ["blender: requires a real Blender 5.2 installation (skipped when unavailable)"]

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{CSRF_TOKEN}}">
+  <meta name="color-scheme" content="light dark">
+  <title>Sculpt Workspace</title>
+  <link rel="preload" href="/static/fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/static/fonts/SairaStencilOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="wordmark" href="/" data-nav>
+      <span class="wordmark-mark" aria-hidden="true"></span>
+      <span>Sculpt Workspace</span>
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a href="/" data-nav data-nav-projects>Projects</a>
+    </nav>
+    <div class="engine" id="engine-status" role="status" aria-live="polite"></div>
+  </header>
+  <div class="notice" id="engine-notice" role="alert" hidden></div>
+  <main id="main" tabindex="-1"></main>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <template id="tpl-projects">
+    <section class="projects" aria-labelledby="projects-title">
+      <h1 id="projects-title" class="page-title">Projects</h1>
+      <div class="projects-grid">
+        <section class="intake" aria-labelledby="intake-title">
+          <h2 id="intake-title" class="section-title">Upload a sculpture</h2>
+          <div class="dropzone" data-dropzone>
+            <svg class="icon icon-lg" aria-hidden="true"><use href="/static/icons.svg#i-upload"></use></svg>
+            <p class="dropzone-lead">Drop a <span class="mono">.blend</span> file here</p>
+            <p class="dropzone-hint">Self-contained files only: pack images and fonts, make linked data local. Up to <span data-limit>512 MiB</span>.</p>
+            <label class="btn btn-secondary">
+              <input type="file" accept=".blend" data-file-input class="visually-hidden">
+              <span>Choose file</span>
+            </label>
+          </div>
+          <div class="intake-status" data-intake hidden></div>
+        </section>
+        <section class="recent" aria-labelledby="recent-title">
+          <h2 id="recent-title" class="section-title">Recent projects</h2>
+          <div data-recent></div>
+        </section>
+      </div>
+    </section>
+  </template>
+
+</body>
+</html>
